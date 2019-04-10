@@ -1,3 +1,9 @@
+"if exists("g:loaded_tasksearch") || &cp
+"  finish
+"endif
+"let g:loaded_tasksearch = 1
+
+
 function GoToNextTask()
   " Get the current byte offset
   let byte_offset=line2byte(line('.'))+col('.')-2
@@ -9,3 +15,6 @@ function GoToNextTask()
   " Position the cursor at the next task
   exec "goto " . (new_offset + 1)
 endfunction
+
+nmap <leader>n :call GoToNextTask()<CR>
+
