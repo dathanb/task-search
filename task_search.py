@@ -22,9 +22,8 @@ class Task(object):
         return Task(offset, value)
 
     @classmethod
-    def find_all(text):
+    def find_all(cls, text):
         return [Task.parse(text, match.start()) for match in REGEX.finditer(text)]
-
 
     @classmethod
     def find_next(text, offset):

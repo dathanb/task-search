@@ -17,6 +17,18 @@ class TaskParseTest(unittest.TestCase):
         self.assertEqual(task.value, "first")
 
 
+class FindAllTest(unittest.TestCase):
+    def test_finds_all_tasks(self):
+        text = "- [ ] first\n  - [ ] second\n- [ ] third"
+        tasks = task_search.Task.find_all(text)
+        self.assertEqual(tasks[0].offset, 0)
+        self.assertEqual(tasks[0].value, "first")
+        self.assertEqual(tasks[1].offset, 14)
+        self.assertEqual(tasks[1].value, "second")
+        self.assertEqual(tasks[2].offset, 27)
+        self.assertEqual(tasks[2].value, "third")
+
+
 class FindNextTaskTest(unittest.TestCase):
     def test_ignores_text_before_starting_offset(self):
         result = task_search.find_next_task(2, "- [ ] first\n- [ ] second")
