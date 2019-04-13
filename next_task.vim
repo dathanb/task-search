@@ -1,10 +1,10 @@
-"if exists("g:loaded_tasksearch") || &cp
-"  finish
-"endif
-"let g:loaded_tasksearch = 1
+if exists("g:loaded_tasksearch") || &cp
+  finish
+endif
+let g:loaded_tasksearch = 1
 
 
-function GoToNextTask()
+function! GoToNextTask()
   " Get the current byte offset
   let byte_offset=line2byte(line('.'))+col('.')-2
   " Get the contents of the current buffer
@@ -16,7 +16,7 @@ function GoToNextTask()
   execute "normal! :goto " . (new_offset + 1) . "\<cr>"
 endfunction
 
-function GoToPreviousTask()
+function! GoToPreviousTask()
   " Get the current byte offset
   let byte_offset=line2byte(line('.'))+col('.')-2
   " Get the contents of the current buffer
