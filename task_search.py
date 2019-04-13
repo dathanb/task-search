@@ -1,25 +1,41 @@
 import sys
 import re
+import datetime
 
 REGEX = re.compile("- \[ \]")
 
 
 class Task(object):
-    def __init__(self, offset, value):
+    def __init__(self, offset, value, date_predicate):
         self.offset = offset
         self.value = value
+        self.date_predicate = date_predicate
 
     @classmethod
     def parse(cls, text, offset):
         """
         Assumes that the given offset really does point to a task.
         """
-        start_offset = offset + 6 # skip the "- [ ] "
-        finish_offset = text.find("\n", offset) # find the end of the line
+        value_offset = offset + 6 # skip the "- [ ] "
+
+        date_predicate = None
+        date_part = Task.try_parse_date(text, value_offset)
+
+        if date_part is not None:
+            date_predicate = date_part[0]
+            value_offset += date_part[1]
+            # skip the ": " after the date, if there is one
+            if text[value_offset:value_offset+2] == ": ":
+                value_offset += 2
+            else:
+                while text[value_offset] == " ":
+                    value_offset += 1
+
+        finish_offset = text.find("\n", value_offset) # find the end of the line
         if finish_offset == -1:
             finish_offset = len(text) # if there's no \n later in the text, just go to the end of the text
-        value = text[start_offset:finish_offset]
-        return Task(offset, value)
+        value = text[value_offset:finish_offset]
+        return Task(offset, value, date_predicate)
 
     @classmethod
     def find_all(cls, text):
@@ -32,6 +48,24 @@ class Task(object):
     @classmethod
     def find_previous(text, offset):
         pass
+
+    @classmethod
+    def try_parse_date(cls, text, offset):
+        length = 0
+        if text[offset] == ">":
+            offset += 1
+            length += 1
+        if len(text) < offset+10:
+            # text doesn't have room for a date
+            return None
+        if (text[offset:(offset+4)].isdigit() # year component
+                and text[offset+4] == "-" 
+                and text[offset+5:offset+7].isdigit() # month component
+                and text[offset+7] == "-"
+                and text[offset+8:offset+10].isdigit()):
+            length += 10
+            return (text[offset:(offset+10)], length)
+        return None
 
 
 def find_next_task(offset, text):
