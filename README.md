@@ -20,3 +20,11 @@ And completed checklist items will never match. e.g.,
 
 (I don't think the latter format is standard markdown, but it's how I represent tasks that haven't been done, but
 I've decided not to do.) 
+
+## Development
+
+The vimscript `tasks.vim` is the vim integration.
+
+The `task_search.py` file contains the actual task searching logic.
+
+To run tests, you can either run `python tests.py` or just `./tests.py`
