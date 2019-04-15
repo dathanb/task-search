@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import datetime
+import time
 import unittest
 import task_search
 from task_search import Task
@@ -61,24 +61,45 @@ class TryParseDateTest(unittest.TestCase):
         self.assertEqual(result, ("2019-01-01", 11))
 
 
-class FindNextTaskTest(unittest.TestCase):
+class FindNextTest(unittest.TestCase):
     def test_ignores_text_before_starting_offset(self):
-        result = task_search.find_next_task(2, "- [ ] first\n- [ ] second")
-        self.assertEqual(15, result, "Should ignore the leading line; expected 2, got {}".format(result))
+        result = Task.find_next("- [ ] first\n- [ ] second", 2)
+        expected = Task(12, "second", None)
+        self.assertEqual(result, expected)
 
-    def test_when_no_next_task_returns_original_offset(self):
-        result = task_search.find_next_task(2, "foo")
-        self.assertEqual(2, result)
+    def test_stops_on_tasks_with_past_dates(self):
+        text = "\n- [ ] 2019-04-01: first\n- [ ] >2019-04-01: second\n- [ ] third"
+        expected = Task(1, "first", '2019-04-01')
+        result = Task.find_next(text, 0)
+        self.assertEqual(result, expected)
+
+    def test_skips_dated_tasks_in_the_future(self):
+        text = "- [ ] first\n- [ ] >2099-01-01: second\n- [ ] third"
+        expected = Task(38, "third", None)
+        result = Task.find_next(text, 5)
+        self.assertEqual(result, expected)
+
+    def test_when_no_next_task_returns_None(self):
+        result = Task.find_next("foo", 2)
+        self.assertEqual(result, None)
 
 
 class FindPreviousTaskTest(unittest.TestCase):
-    def test_when_offset_is_in_a_task_ignores_the_task(self):
-        result = task_search.find_previous_task(13, "- [ ] first\n- [ ] second")
-        self.assertEqual(3, result)
+    def test_when_offset_is_in_a_task_checkbox_ignores_the_task(self):
+        text = "- [ ] first\n- [ ] second"
+        result = Task.find_previous(text, 13)
+        expected = Task(0, "first", None)
+        self.assertEqual(expected, result)
 
-    def test_when_no_previous_task_returns_the_original_offset(self):
-        result = task_search.find_previous_task(3, "- [ ] first\n- [ ] second")
-        self.assertEqual(3, result)
+    def test_when_no_previous_task_returns_none(self):
+        result = Task.find_previous("- [ ] first\n- [ ] second", 3)
+        self.assertEqual(result, None)
+
+
+class PassesDatePredicateTest(unittest.TestCase):
+    def test_when_date_predicate_is_none_returns_true(self):
+        task = Task(0, "foo", None)
+        self.assertTrue(task.passes_date_predicate("2019-04-01"))
 
 
 if __name__ == "__main__":

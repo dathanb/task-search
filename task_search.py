@@ -1,6 +1,6 @@
 import sys
 import re
-import datetime
+import time
 
 REGEX = re.compile("- \[ \]")
 
@@ -10,6 +10,20 @@ class Task(object):
         self.offset = offset
         self.value = value
         self.date_predicate = date_predicate
+
+    def __eq__(self, other):
+        if isinstance(other, Task):
+            return self.offset == other.offset and self.value == other.value and self.date_predicate == other.date_predicate
+        return False
+
+    def __str__(self):
+        return "{{offset: {0}, value: \"{1}\", date_predicate: {2}}}".format(self.offset, self.value, self.date_predicate)
+
+    def __repr__(self):
+        return "{{offset: {0}, value: \"{1}\", date_predicate: {2}}}".format(self.offset, self.value, self.date_predicate)
+
+    def passes_date_predicate(self, date):
+        return self.date_predicate is None or self.date_predicate <= date
 
     @classmethod
     def parse(cls, text, offset):
@@ -42,12 +56,20 @@ class Task(object):
         return [Task.parse(text, match.start()) for match in REGEX.finditer(text)]
 
     @classmethod
-    def find_next(text, offset):
-        pass
+    def find_next(cls, text, offset):
+        tasks = Task.find_all(text)
+        filtered_tasks = [task for task in tasks if task.offset > offset and task.passes_date_predicate(today())]
+        if len(filtered_tasks) > 0:
+            return filtered_tasks[0]
+        return None
 
     @classmethod
-    def find_previous(text, offset):
-        pass
+    def find_previous(cls, text, offset):
+        tasks = Task.find_all(text)
+        filtered_tasks = [task for task in tasks if task.offset < offset - 3 and task.passes_date_predicate(today())]
+        if len(filtered_tasks) > 0:
+            return filtered_tasks[-1]
+        return None
 
     @classmethod
     def try_parse_date(cls, text, offset):
@@ -68,30 +90,26 @@ class Task(object):
         return None
 
 
-def find_next_task(offset, text):
-    task_positions = [match.start() for match in REGEX.finditer(text) if match.start() > offset]
-    if len(task_positions) > 0:
-        return task_positions[0] + 3
-    return offset
-
-
-def find_previous_task(offset, text):
-    task_positions = [match.start() for match in REGEX.finditer(text) if match.start() < offset - 3]
-    if len(task_positions) > 0:
-        return task_positions[-1] + 3
-    return offset
+def today():
+    return time.strftime("%Y-%m-%d", time.localtime())
 
 
 def main(operation, offset, text):
     if operation == "next":
-        return find_next_task(int(byte_offset), text)
+        task = Task.find_next(text, offset)
+        if task == None:
+            return offset
+        return task.offset + 3 # position at the checkmark position
     elif operation == "previous":
-        return find_previous_task(int(byte_offset), text)
+        task = Task.find_previous(text, offset)
+        if task == None:
+            return offset
+        return task.offset + 3 # position at the checkmark position
 
 
 if __name__ == "__main__":
     direction = sys.argv[1]
     byte_offset = sys.argv[2]
     text = sys.stdin.read()
-    val = main(direction, byte_offset, text)
+    val = main(direction, int(byte_offset), text)
     print val
