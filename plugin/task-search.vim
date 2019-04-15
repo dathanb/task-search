@@ -3,6 +3,13 @@ if exists("g:loaded_tasksearch") || &cp
 endif
 let g:loaded_tasksearch = 1
 
+let s:filename = resolve(expand('<sfile>:p'))
+let s:folder = fnamemodify(s:filename, ':h')
+let s:python_filename = s:folder . '/task_search.py'
+
+function! PythonFile()
+  return s:python_filename
+endfunction
 
 function! GoToNextTask()
   " Get the current byte offset
@@ -11,9 +18,9 @@ function! GoToNextTask()
   " TODO: this is hacky and may work incorrectly with other line endings. If we notice issues, pick another approach
   let buf=join(getline(1, '$'), "\n")
   " Find the location of the next task
-  let new_offset=system("python ~/dev/task-search/task_search.py next " . byte_offset, buf)
+  let new_offset=system('python ' . PythonFile() . ' next ' . byte_offset, buf)
   " Position the cursor at the next task
-  execute "normal! :goto " . (new_offset + 1) . "\<cr>"
+  execute 'normal! :goto ' . (new_offset + 1) . "\<cr>"
 endfunction
 
 function! GoToPreviousTask()
@@ -23,7 +30,7 @@ function! GoToPreviousTask()
   " TODO: this is hacky and may work incorrectly with other line endings. If we notice issues, pick another approach
   let buf=join(getline(1, '$'), "\n")
   " Find the location of the next task
-  let new_offset=system("python ~/dev/task-search/task_search.py previous " . byte_offset, buf)
+  let new_offset=system("python " . PythonFile() . " previous " . byte_offset, buf)
   " Position the cursor at the next task
   execute "normal! :goto " . (new_offset + 1) . "\<cr>"
 endfunction
