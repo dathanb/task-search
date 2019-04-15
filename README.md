@@ -28,3 +28,7 @@ The vimscript `tasks.vim` is the vim integration.
 The `task_search.py` file contains the actual task searching logic.
 
 To run tests, you can either run `python tests.py` or just `./tests.py`
+
+## Installation
+
+If using Pathogen, just `git clone https://github.com/dathanb/task-search ~/.vim/bundle/task-search`
