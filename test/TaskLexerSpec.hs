@@ -86,3 +86,11 @@ spec = do
     it "parses empty whitespace" $
       parse whitespace "foo" `shouldBe` [(WhitespaceToken, "foo")]
 
+  describe "colon" $ do
+    it "parses a single colon" $
+      parse colon ":" `shouldBe` [(ColonToken, "")]
+    it "fails on non-colon" $
+      parse colon "foo" `shouldBe` []
+    it "consumes only a single colon when there are multiple" $
+      parse colon "::" `shouldBe` [(ColonToken, ":")]
+
