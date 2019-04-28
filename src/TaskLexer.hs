@@ -12,6 +12,8 @@ data LexicalToken
   | GreaterThanToken
   | NumberToken Integer
   | WhitespaceToken
+  | ColonToken
+  deriving (Show, Eq)
 
 dash :: Parser LexicalToken
 dash = do
@@ -42,18 +44,18 @@ greaterThanSign = do
 digit :: Parser Char
 digit = satisfy isDigit
 
--- parse a positive or negative integer
-number :: Parser Int
-number = do
-  s <- string "-" <|> return []
-  cs <- some digit
-  return $ read (s ++ cs)
-
 -- parse a natural number
 natural :: Parser LexicalToken
 natural = NumberToken <$> (read <$> some (satisfy isDigit))
 
+-- consume zero or more contiguous whitespace characters
 whitespace :: Parser LexicalToken
 whitespace = do
   s <- spaces
   return WhitespaceToken
+
+-- literal ':'
+colon :: Parser LexicalToken
+colon = do
+  s <- char ':'
+  return ColonToken
