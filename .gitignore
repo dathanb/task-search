@@ -1,8 +1,10 @@
 *.swp
 *.pyc
 
-dist/
-dist-newstyle/
-.ghc.environment.x86_64-darwin-8.6.4
+# IntelliJ artifacts
 .idea/
+*.iml
+
+# Stack artifacts
 .stack-work/
+out/
