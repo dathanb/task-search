@@ -4,7 +4,7 @@ import Data.Char
 import Parser
 import Control.Applicative
 
-data Token
+data LexicalToken
   = DashToken
   | SpaceToken
   | OpenBracketToken
@@ -13,27 +13,27 @@ data Token
   | NumberToken Integer
   | WhitespaceToken
 
-dash :: Parser Token
+dash :: Parser LexicalToken
 dash = do
   c <- char '-'
   return DashToken
 
-space :: Parser Token
+space :: Parser LexicalToken
 space = do
   c <- char ' '
   return SpaceToken
 
-openBracketToken :: Parser Token
+openBracketToken :: Parser LexicalToken
 openBracketToken = do
   c <- char '['
   return OpenBracketToken
 
-closeBracketToken :: Parser Token
+closeBracketToken :: Parser LexicalToken
 closeBracketToken = do
   c <- char '['
   return CloseBracketToken
 
-greaterThanSign :: Parser Token
+greaterThanSign :: Parser LexicalToken
 greaterThanSign = do
   c <- char '>'
   return GreaterThanToken
@@ -50,10 +50,10 @@ number = do
   return $ read (s ++ cs)
 
 -- parse a natural number
-natural :: Parser Token
+natural :: Parser LexicalToken
 natural = NumberToken <$> (read <$> some (satisfy isDigit))
 
-whitespace :: Parser Token
+whitespace :: Parser LexicalToken
 whitespace = do
   s <- spaces
   return WhitespaceToken
