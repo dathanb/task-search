@@ -81,7 +81,7 @@ oneOf :: [Char] -> Parser Char
 oneOf s = satisfy ( flip elem s )
 
 
--- parse a literal character
+-- consume a single literal character
 char :: Char -> Parser Char
 char c = satisfy (c ==)
 
@@ -105,13 +105,6 @@ char c = satisfy (c ==)
 --     many_v = some_v <|> pure []
 --     some_v = (:) <$> v <*> many_v
 
-
-
-
--- parse a natural number
-natural :: Parser Integer
-natural = read <$> some (satisfy isDigit)
-
 -- parse a string literal
 string :: String -> Parser String
 string [] = return []
@@ -124,17 +117,6 @@ spaces = many $ oneOf " \n\r"
 -- parse literally anything
 anything :: Parser String
 anything = many item
-
--- parse a single digit
-digit :: Parser Char
-digit = satisfy isDigit
-
--- parse a positive or negative integer
-number :: Parser Int
-number = do
-  s <- string "-" <|> return []
-  cs <- some digit
-  return $ read (s ++ cs)
 
 -- parse a single token from another parser and zero or more spaces after it and return the token
 token :: Parser a -> Parser a
