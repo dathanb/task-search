@@ -25,14 +25,14 @@ space = do
   c <- char ' '
   return SpaceToken
 
-openBracketToken :: Parser LexicalToken
-openBracketToken = do
+openBracket :: Parser LexicalToken
+openBracket = do
   c <- char '['
   return OpenBracketToken
 
-closeBracketToken :: Parser LexicalToken
-closeBracketToken = do
-  c <- char '['
+closeBracket :: Parser LexicalToken
+closeBracket = do
+  c <- char ']'
   return CloseBracketToken
 
 greaterThanSign :: Parser LexicalToken

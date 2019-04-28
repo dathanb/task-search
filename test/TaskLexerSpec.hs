@@ -25,3 +25,27 @@ spec = do
     it "consumes only a single space when there are multiple" $ do
       parse space "  " `shouldBe` [(SpaceToken, " ")]
 
+  describe "openBracket" $ do
+    it "parses a single open bracket" $ do
+      parse openBracket "[" `shouldBe` [(OpenBracketToken, "")]
+    it "fails on non-open-bracket" $ do
+      parse openBracket " " `shouldBe` []
+    it "consumes only a single open bracket when there are multiple" $ do
+      parse openBracket "[[" `shouldBe` [(OpenBracketToken, "[")]
+
+  describe "closeBracket" $ do
+    it "parses a single close bracket" $ do
+      parse closeBracket "]" `shouldBe` [(CloseBracketToken, "")]
+    it "fails on non-close-bracket" $ do
+      parse closeBracket " " `shouldBe` []
+    it "consumes only a single close bracket when there are multiple" $ do
+      parse closeBracket "]]" `shouldBe` [(CloseBracketToken, "]")]
+
+  describe "greaterThanSign" $ do
+    it "parses a single greater than sign" $ do
+      parse greaterThanSign ">" `shouldBe` [(GreaterThanToken, "")]
+    it "fails on non-greater-than-sign" $ do
+      parse greaterThanSign "foo" `shouldBe` []
+    it "consumes only a single close bracker when there are multiple" $ do
+      parse greaterThanSign ">>" `shouldBe` [(GreaterThanToken, ">")]
+
