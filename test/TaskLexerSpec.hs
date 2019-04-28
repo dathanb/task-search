@@ -75,3 +75,14 @@ spec = do
       parse natural "123f" `shouldBe` [(NumberToken 123, "f")]
     it "fails on non-number" $
       parse natural "foo" `shouldBe` []
+
+  describe "whitespace" $ do
+    it "parses a single whitespace" $
+      parse whitespace " " `shouldBe` [(WhitespaceToken, "")]
+    it "parses multiple whitespace" $
+      parse whitespace "    " `shouldBe` [(WhitespaceToken, "")]
+    it "parses up to the first non-whitespace" $
+      parse whitespace "    foo" `shouldBe` [(WhitespaceToken, "foo")]
+    it "parses empty whitespace" $
+      parse whitespace "foo" `shouldBe` [(WhitespaceToken, "foo")]
+
