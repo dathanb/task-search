@@ -10,7 +10,8 @@ data Token
   | OpenBracketToken
   | CloseBracketToken
   | GreaterThanToken
-  | Number Integer
+  | NumberToken Integer
+  | WhitespaceToken
 
 dash :: Parser Token
 dash = do
@@ -50,4 +51,9 @@ number = do
 
 -- parse a natural number
 natural :: Parser Token
-natural = Number <$> (read <$> some (satisfy isDigit))
+natural = NumberToken <$> (read <$> some (satisfy isDigit))
+
+whitespace :: Parser Token
+whitespace = do
+  s <- spaces
+  return WhitespaceToken
