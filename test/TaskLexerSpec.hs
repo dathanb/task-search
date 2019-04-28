@@ -65,3 +65,13 @@ spec = do
       parse digit "foo" `shouldBe` []
     it "consumes only a single digit when there are multiple" $
       parse digit "12" `shouldBe` [('1', "2")]
+
+  describe "natural" $ do
+    it "parses a one-digit number" $
+      parse natural "0" `shouldBe` [(NumberToken 0, "")]
+    it "parses a two-digit number" $
+      parse natural "21" `shouldBe` [(NumberToken 21, "")]
+    it "consumes up to first non-digit" $
+      parse natural "123f" `shouldBe` [(NumberToken 123, "f")]
+    it "fails on non-number" $
+      parse natural "foo" `shouldBe` []
