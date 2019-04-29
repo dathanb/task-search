@@ -49,3 +49,13 @@ taskWithDate = do
   whitespace
   (DatedTask d) <$> anything
 
+finishedTask :: Parser Line
+finishedTask = do
+  whitespace
+  dash
+  space
+  openBracket
+  char 'X'
+  closeBracket
+  space
+  Task <$> anything
