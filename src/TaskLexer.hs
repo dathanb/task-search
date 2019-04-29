@@ -10,10 +10,12 @@ data LexicalToken
   | OpenBracketToken
   | CloseBracketToken
   | GreaterThanToken
-  | NumberToken Integer
   | WhitespaceToken
   | ColonToken
   deriving (Show, Eq)
+
+data NumberToken = NumberToken Integer deriving (Eq, Show)
+
 
 dash :: Parser LexicalToken
 dash = do
@@ -45,7 +47,7 @@ digit :: Parser Char
 digit = satisfy isDigit
 
 -- parse a natural number
-natural :: Parser LexicalToken
+natural :: Parser NumberToken
 natural = NumberToken <$> (read <$> some (satisfy isDigit))
 
 -- consume zero or more contiguous whitespace characters

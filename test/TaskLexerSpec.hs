@@ -9,7 +9,7 @@ import TaskLexer
 main :: IO()
 main = hspec spec
 
-spec ::Spec
+spec :: Spec
 spec = do
   describe "dash" $ do
     it "parses a dash" $
