@@ -9,6 +9,7 @@ data Date = Date Integer Integer Integer -- year month day
 data Line
   = Task String
   | DatedTask Date String
+  | CompleteTask String
   deriving (Eq, Show)
 
 unwrap (NumberToken a) = a
@@ -49,8 +50,8 @@ taskWithDate = do
   whitespace
   (DatedTask d) <$> anything
 
-finishedTask :: Parser Line
-finishedTask = do
+completeTask :: Parser Line
+completeTask = do
   whitespace
   dash
   space
@@ -58,4 +59,6 @@ finishedTask = do
   char 'X'
   closeBracket
   space
-  Task <$> anything
+  CompleteTask <$> anything
+
+

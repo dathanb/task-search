@@ -27,3 +27,7 @@ spec = do
     it "parses a dated task with leading whitespace" $
       parse taskWithDate "    - [ ] >2019-01-01: foo" `shouldBe` [(DatedTask (Date 2019 1 1) "foo", "")]
 
+  describe "completeTask" $ do
+    it "parses a complete task" $
+      parse completeTask "    - [X] anything" `shouldBe` [(CompleteTask "anything", "")]
+
