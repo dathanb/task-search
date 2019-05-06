@@ -1,16 +1,19 @@
 module Main where
 
-import Data.String.Strip
---import Text.ParserCombinators.Parsec
-import Parser
-
-parseTask :: String -> Bool
-parseTask = runParser task
+import Text.Parsec
+import Text.Parsec.Error
+import Text.Parsec.Pos
+import Data.Either
+import TaskLexer
 
 main :: IO()
 main = do
-  line <- getLine
-  putStrLn $ show $ parseTask line
+--  let pr = runParser dash "" "" "other"
+--  let pe = fromLeft (newErrorUnknown (newPos "" 1 1)) pr
+  parseTest dash "other"
+--  contents <- getContents
+--  putStrLn $ show $ parseTask contents
+--  putStrLn contents
 
 --main :: IO ()
 --main = interact $ \line ->

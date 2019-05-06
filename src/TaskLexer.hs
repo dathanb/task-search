@@ -1,8 +1,11 @@
 module TaskLexer where
 
 import Data.Char
-import Parser
-import Control.Applicative
+
+import Text.ParserCombinators.Parsec
+import Text.ParserCombinators.Parsec.Expr
+import Text.ParserCombinators.Parsec.Language
+import qualified Text.ParserCombinators.Parsec.Token as Token
 
 data LexicalToken
   = DashToken
@@ -14,52 +17,51 @@ data LexicalToken
   | ColonToken
   deriving (Show, Eq)
 
-data NumberToken = NumberToken Integer deriving (Eq, Show)
 
+newtype NumberToken = NumberToken Integer deriving (Eq, Show)
 
-dash :: Parser LexicalToken
+dash :: GenParser Char st LexicalToken
 dash = do
   c <- char '-'
   return DashToken
 
-space :: Parser LexicalToken
+space :: GenParser Char st LexicalToken
 space = do
   c <- char ' '
   return SpaceToken
 
-openBracket :: Parser LexicalToken
+openBracket :: GenParser Char st LexicalToken
 openBracket = do
   c <- char '['
   return OpenBracketToken
 
-closeBracket :: Parser LexicalToken
+closeBracket :: GenParser Char st LexicalToken
 closeBracket = do
   c <- char ']'
   return CloseBracketToken
 
-greaterThanSign :: Parser LexicalToken
+greaterThanSign :: GenParser Char st LexicalToken
 greaterThanSign = do
   c <- char '>'
   return GreaterThanToken
 
 -- parse a single digit
-digit :: Parser Char
-digit = satisfy isDigit
+--digit :: GenParser Char st Char
+--digit = satisfy isDigit
 
--- parse a natural number
-natural :: Parser NumberToken
-natural = NumberToken <$> (read <$> some (satisfy isDigit))
+---- parse a natural number
+natural :: GenParser Char st NumberToken
+natural = NumberToken <$> (read <$> many1 (satisfy isDigit))
 
--- consume zero or more contiguous whitespace characters
-whitespace :: Parser LexicalToken
+---- consume zero or more contiguous whitespace characters
+whitespace :: GenParser Char st LexicalToken
 whitespace = do
   s <- spaces
   return WhitespaceToken
 
--- literal ':'
-colon :: Parser LexicalToken
+---- literal ':'
+colon :: GenParser Char st LexicalToken
 colon = do
   s <- char ':'
   return ColonToken
 
---
