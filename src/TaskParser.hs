@@ -2,6 +2,7 @@ module TaskParser where
 
 import TaskLexer
 
+import Text.Parsec hiding (space, Line)
 import Text.ParserCombinators.Parsec (GenParser, ParseError, many)
 import Text.ParserCombinators.Parsec.Expr
 import Text.ParserCombinators.Parsec.Language
@@ -71,17 +72,17 @@ unwrap (NumberToken a) = a
 --  colon
 --  whitespace
 --  (DatedTask d) <$> anything
---
---completedTask :: GenParser Char st Line
---completedTask = do
---  whitespace
---  dash
---  space
---  openBracket
---  char 'X'
---  closeBracket
---  space
---  CompletedTask <$> anything
---
+
+completedTask :: GenParser Char st Line
+completedTask = do
+  whitespace
+  dash
+  space
+  openBracket
+  char 'X'
+  closeBracket
+  space
+  CompletedTask <$> anything
+
 --parseFile :: String -> Either ParseError [[Line]]
 --parseFile input = parse markdownFile "(unknown)" input
