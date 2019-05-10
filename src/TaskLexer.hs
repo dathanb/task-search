@@ -62,3 +62,7 @@ colon = do
   s <- char ':'
   return ColonToken
 
+anything :: GenParser Char st String
+anything =
+  many anyChar
+
