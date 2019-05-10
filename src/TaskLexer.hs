@@ -2,6 +2,7 @@ module TaskLexer where
 
 import Data.Char
 
+import Text.Parsec
 import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Expr
 import Text.ParserCombinators.Parsec.Language
@@ -44,10 +45,6 @@ greaterThanSign :: GenParser Char st LexicalToken
 greaterThanSign = do
   c <- char '>'
   return GreaterThanToken
-
--- parse a single digit
---digit :: GenParser Char st Char
---digit = satisfy isDigit
 
 ---- parse a natural number
 natural :: GenParser Char st NumberToken
