@@ -36,10 +36,16 @@ spec = do
       let res = parse taskWithoutDate "" "something that's not a task"
       res `shouldSatisfy` isLeft
 
---  describe "date" $ do
---    it "parses a yyyy-mm-dd date" $
---      parse date "2019-01-01" `shouldBe` [(Date 2019 1 1, "")]
---
+  describe "date" $ do
+    it "parses a yyyy-mm-dd date" $ do
+      let res = parse date "" "2019-01-01"
+      res `shouldSatisfy` isRight
+      let right = getRight res
+      right `shouldBe` Date 2019 1 1
+    it "fails on a non-date" $ do
+      let res = parse date "" "foo"
+      res `shouldSatisfy` isLeft
+
 --  describe "taskWithDate" $ do
 --    it "parses a dated task with no leading whitespace" $
 --      parse taskWithDate "- [ ] >2019-01-01: foo" `shouldBe` [(DatedTask (Date 2019 1 1) "foo", "")]

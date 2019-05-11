@@ -37,15 +37,15 @@ unwrap (NumberToken a) = a
 --  return result
 --
 --
----- TODO: limit this to just YYYY-MM-DD format
---date :: GenParser Char st Date
---date = do
---  y <- natural
---  dash
---  m <- natural
---  dash
---  d <- natural
---  return $ Date (unwrap y) (unwrap m) (unwrap d)
+-- TODO: limit this to just YYYY-MM-DD format
+date :: GenParser Char st Date
+date = do
+  y <- natural
+  dash
+  m <- natural
+  dash
+  d <- natural
+  return $ Date (unwrap y) (unwrap m) (unwrap d)
 
 taskWithoutDate :: GenParser Char st Line
 taskWithoutDate = do
