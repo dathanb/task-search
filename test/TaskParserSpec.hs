@@ -1,16 +1,22 @@
 module TaskParserSpec where
 
+import Data.Either
+
 import Test.Hspec
 import Test.QuickCheck
 
+import Text.Parsec
+
 import TaskParser
+
+import TestUtils
 
 main :: IO()
 main = hspec spec
 
 spec :: Spec
 spec = do
-  describe "taskWithoutDate" $ do
+  describe "taskWithoutDate" $
     it "parses a task with no leading whitespace" $
       1 `shouldBe` 1 -- temporary hack just to get things to compile
 --      parse taskWithoutDate "- [ ] foo" `shouldBe` [(Task "foo", "")]
@@ -27,7 +33,11 @@ spec = do
 --    it "parses a dated task with leading whitespace" $
 --      parse taskWithDate "    - [ ] >2019-01-01: foo" `shouldBe` [(DatedTask (Date 2019 1 1) "foo", "")]
 --
---  describe "completedTask" $ do
---    it "parses a complete task" $
---      parse completedTask "    - [X] anything" `shouldBe` [(CompletedTask "anything", "")]
---
+  describe "completedTask" $
+    it "parses a complete task" $ do
+      let either = parse completedTask "N/A" "    - [X] anything"
+      either `shouldSatisfy` isRight
+      let task = getRight either
+      getLineText task  `shouldBe` "anything"
+
+-- TODO: add position to lines, so we can find tasks and return their positions

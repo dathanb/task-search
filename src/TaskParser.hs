@@ -86,3 +86,8 @@ completedTask = do
 
 --parseFile :: String -> Either ParseError [[Line]]
 --parseFile input = parse markdownFile "(unknown)" input
+
+getLineText :: Line -> String
+getLineText (Task s) = s
+getLineText (DatedTask _ s) = s
+getLineText (CompletedTask s) = s
