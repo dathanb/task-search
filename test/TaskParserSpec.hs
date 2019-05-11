@@ -46,11 +46,24 @@ spec = do
       let res = parse date "" "foo"
       res `shouldSatisfy` isLeft
 
---  describe "taskWithDate" $ do
---    it "parses a dated task with no leading whitespace" $
---      parse taskWithDate "- [ ] >2019-01-01: foo" `shouldBe` [(DatedTask (Date 2019 1 1) "foo", "")]
---    it "parses a dated task with leading whitespace" $
---      parse taskWithDate "    - [ ] >2019-01-01: foo" `shouldBe` [(DatedTask (Date 2019 1 1) "foo", "")]
+  describe "taskWithDate" $ do
+    it "parses a dated task with no leading whitespace" $ do
+      let res = parse taskWithDate "" "- [ ] >2019-01-01: foo"
+      res `shouldSatisfy` isRight
+      let right = getRight res
+      getLinePosition right `shouldBe` newPos "" 1 1
+      getLineText right `shouldBe` "foo"
+      getLineDate right `shouldBe` Just (Date 2019 1 1)
+    it "parses a dated task with leading whitespace" $ do
+      let res = parse taskWithDate "" "    - [ ] >2019-01-01: foo"
+      res `shouldSatisfy` isRight
+      let right = getRight res
+      getLineText right `shouldBe` "foo"
+      getLinePosition right `shouldBe` newPos "" 1 5
+      getLineDate right `shouldBe` Just (Date 2019 1 1)
+    it "fails to parse a non-dated task" $ do
+      let res = parse taskWithDate "" "    - [ ] foo"
+      res `shouldSatisfy` isLeft
 
   describe "completedTask" $
     it "parses a complete task" $ do

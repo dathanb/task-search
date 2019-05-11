@@ -35,8 +35,8 @@ unwrap (NumberToken a) = a
 --    <|> nonTask
 --  eol
 --  return result
---
---
+
+
 -- TODO: limit this to just YYYY-MM-DD format
 date :: GenParser Char st Date
 date = do
@@ -59,20 +59,21 @@ taskWithoutDate = do
   space
   Task pos <$> anything
 
---taskWithDate :: GenParser Char st Line
---taskWithDate = do
---  whitespace
---  dash
---  space
---  openBracket
---  space
---  closeBracket
---  space
---  greaterThanSign
---  d <- date
---  colon
---  whitespace
---  (DatedTask d) <$> anything
+taskWithDate :: GenParser Char st Line
+taskWithDate = do
+  whitespace
+  pos <- getPosition
+  dash
+  space
+  openBracket
+  space
+  closeBracket
+  space
+  greaterThanSign
+  d <- date
+  colon
+  whitespace
+  (DatedTask pos d) <$> anything
 
 completedTask :: GenParser Char st Line
 completedTask = do
@@ -99,3 +100,7 @@ getLinePosition (Task p _) = p
 getLinePosition (DatedTask p _ _) = p
 getLinePosition (CompletedTask p _) = p
 
+getLineDate :: Line -> Maybe Date
+getLineDate (Task _ _) = Nothing
+getLineDate (CompletedTask _ _) = Nothing
+getLineDate (DatedTask _ d _) = Just d
