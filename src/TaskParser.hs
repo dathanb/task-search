@@ -19,7 +19,7 @@ data Line
 
 unwrap (NumberToken a) = a
 
---markdownFile :: GenParser Char st [[Line]]
+--markdownFile :: GenParser Char st [Line]
 --markdownFile = do
 --  result <- many line
 --  eof
@@ -46,18 +46,19 @@ unwrap (NumberToken a) = a
 --  dash
 --  d <- natural
 --  return $ Date (unwrap y) (unwrap m) (unwrap d)
---
---taskWithoutDate :: GenParser Char st Line
---taskWithoutDate = do
---  whitespace
---  dash
---  space
---  openBracket
---  space
---  closeBracket
---  space
---  Task <$> anything
---
+
+taskWithoutDate :: GenParser Char st Line
+taskWithoutDate = do
+  whitespace
+  pos <- getPosition
+  dash
+  space
+  openBracket
+  space
+  closeBracket
+  space
+  Task pos <$> anything
+
 --taskWithDate :: GenParser Char st Line
 --taskWithDate = do
 --  whitespace
