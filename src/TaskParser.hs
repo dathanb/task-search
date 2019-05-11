@@ -12,9 +12,9 @@ data Date = Date Integer Integer Integer -- year month day
   deriving (Eq, Show)
 
 data Line
-  = Task String
-  | DatedTask Date String
-  | CompletedTask String
+  = Task SourcePos String
+  | DatedTask SourcePos Date String
+  | CompletedTask SourcePos String
   deriving (Eq, Show)
 
 unwrap (NumberToken a) = a
@@ -76,18 +76,25 @@ unwrap (NumberToken a) = a
 completedTask :: GenParser Char st Line
 completedTask = do
   whitespace
+  pos <- getPosition
   dash
   space
   openBracket
   char 'X'
   closeBracket
   space
-  CompletedTask <$> anything
+  CompletedTask pos <$> anything
 
 --parseFile :: String -> Either ParseError [[Line]]
 --parseFile input = parse markdownFile "(unknown)" input
 
 getLineText :: Line -> String
-getLineText (Task s) = s
-getLineText (DatedTask _ s) = s
-getLineText (CompletedTask s) = s
+getLineText (Task _ s) = s
+getLineText (DatedTask _ _ s) = s
+getLineText (CompletedTask _ s) = s
+
+getLinePosition :: Line -> SourcePos
+getLinePosition (Task p _) = p
+getLinePosition (DatedTask p _ _) = p
+getLinePosition (CompletedTask p _) = p
+

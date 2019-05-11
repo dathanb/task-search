@@ -6,6 +6,7 @@ import Test.Hspec
 import Test.QuickCheck
 
 import Text.Parsec
+import Text.Parsec.Pos
 
 import TaskParser
 
@@ -16,9 +17,7 @@ main = hspec spec
 
 spec :: Spec
 spec = do
-  describe "taskWithoutDate" $
-    it "parses a task with no leading whitespace" $
-      1 `shouldBe` 1 -- temporary hack just to get things to compile
+  describe "taskWithoutDate" $ it "parses a task with no leading whitespace" $ 1 `shouldBe` 1
 --      parse taskWithoutDate "- [ ] foo" `shouldBe` [(Task "foo", "")]
 --    it "parses a task with leading whitespace" $
 --      parse taskWithoutDate "    - [ ] foo" `shouldBe` [(Task "foo", "")]
@@ -38,6 +37,7 @@ spec = do
       let either = parse completedTask "N/A" "    - [X] anything"
       either `shouldSatisfy` isRight
       let task = getRight either
-      getLineText task  `shouldBe` "anything"
+      getLineText task `shouldBe` "anything"
+      getLinePosition task `shouldBe` newPos "N/A" 1 5
 
 -- TODO: add position to lines, so we can find tasks and return their positions
