@@ -37,13 +37,13 @@ spec :: Spec
 spec = do
   describe "dash" $ do
     it "parses a dash" $
-      parse dash "N/A" "-" `shouldBe` (Right DashToken)
+      parse dash "N/A" "-" `shouldBe` Right DashToken
     it "fails on non-dash" $
       parse dash "N/A" "other" `shouldSatisfy` isLeft
 
   describe "space" $ do
     it "parses a single space" $
-      parse space "N/A" " " `shouldBe` (Right SpaceToken)
+      parse space "N/A" " " `shouldBe` Right SpaceToken
     it "fails on non-space" $
       parse space "N/A" "foo" `shouldSatisfy` isLeft
     it "consumes only a single space when there are multiple" $
@@ -52,7 +52,7 @@ spec = do
 
   describe "openBracket" $ do
     it "parses a single open bracket" $
-      parse openBracket "N/A" "[" `shouldBe` (Right OpenBracketToken)
+      parse openBracket "N/A" "[" `shouldBe` Right OpenBracketToken
     it "fails on non-open-bracket" $
       parse openBracket "N/A" " " `shouldSatisfy` isLeft
     it "consumes only a single open bracket when there are multiple" $
@@ -61,7 +61,7 @@ spec = do
 
   describe "closeBracket" $ do
     it "parses a single close bracket" $
-      parse closeBracket "N/A" "]" `shouldBe` (Right CloseBracketToken)
+      parse closeBracket "N/A" "]" `shouldBe` Right CloseBracketToken
     it "fails on non-close-bracket" $
       parse closeBracket "N/A" " " `shouldSatisfy` isLeft
     it "consumes only a single close bracket when there are multiple" $
@@ -70,7 +70,7 @@ spec = do
 
   describe "greaterThanSign" $ do
     it "parses a single greater than sign" $
-      parse greaterThanSign "N/A" ">" `shouldBe` (Right GreaterThanToken)
+      parse greaterThanSign "N/A" ">" `shouldBe` Right GreaterThanToken
     it "fails on non-greater-than-sign" $
       parse greaterThanSign "N/A" "foo" `shouldSatisfy` isLeft
     it "consumes only a single close bracker when there are multiple" $
@@ -79,16 +79,16 @@ spec = do
 
   describe "digit" $ do
     it "parses a single digit" $ do
-      parse digit "N/A" "0" `shouldBe` (Right '0')
-      parse digit "N/A" "1" `shouldBe` (Right '1')
-      parse digit "N/A" "2" `shouldBe` (Right '2')
-      parse digit "N/A" "3" `shouldBe` (Right '3')
-      parse digit "N/A" "4" `shouldBe` (Right '4')
-      parse digit "N/A" "5" `shouldBe` (Right '5')
-      parse digit "N/A" "6" `shouldBe` (Right '6')
-      parse digit "N/A" "7" `shouldBe` (Right '7')
-      parse digit "N/A" "8" `shouldBe` (Right '8')
-      parse digit "N/A" "9" `shouldBe` (Right '9')
+      parse digit "N/A" "0" `shouldBe` Right '0'
+      parse digit "N/A" "1" `shouldBe` Right '1'
+      parse digit "N/A" "2" `shouldBe` Right '2'
+      parse digit "N/A" "3" `shouldBe` Right '3'
+      parse digit "N/A" "4" `shouldBe` Right '4'
+      parse digit "N/A" "5" `shouldBe` Right '5'
+      parse digit "N/A" "6" `shouldBe` Right '6'
+      parse digit "N/A" "7" `shouldBe` Right '7'
+      parse digit "N/A" "8" `shouldBe` Right '8'
+      parse digit "N/A" "9" `shouldBe` Right '9'
     it "fails on non-digit" $
       parse digit "N/A" "foo" `shouldSatisfy` isLeft
     it "consumes only a single digit when there are multiple" $
