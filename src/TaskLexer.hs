@@ -63,6 +63,7 @@ colon = do
   return ColonToken
 
 anything :: GenParser Char st String
-anything =
-  many anyChar
+anything = many anyChar
 
+restOfLine :: GenParser Char st String
+restOfLine = many $ satisfy (/= '\n')

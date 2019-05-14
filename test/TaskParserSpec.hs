@@ -32,6 +32,20 @@ spec = do
       getLineText right `shouldBe` "foo"
       getLinePosition right `shouldBe` newPos "" 1 5
 
+    it "consumes only until the end of the line" $ do
+      let res = parse taskWithoutDate "" "    - [ ] foo\nnext"
+      res `shouldSatisfy` isRight
+      let right = getRight res
+      getLineText right `shouldBe` "foo"
+      getLinePosition right `shouldBe` newPos "" 1 5
+
+    it "is still a task if it has no label" $ do
+      let res = parse taskWithoutDate "" "    - [ ] \nnext"
+      res `shouldSatisfy` isRight
+      let right = getRight res
+      getLineText right `shouldBe` ""
+      getLinePosition right `shouldBe` newPos "" 1 5
+
     it "fails to parse a line without a task" $ do
       let res = parse taskWithoutDate "" "something that's not a task"
       res `shouldSatisfy` isLeft
@@ -72,5 +86,19 @@ spec = do
       let task = getRight either
       getLineText task `shouldBe` "anything"
       getLinePosition task `shouldBe` newPos "N/A" 1 5
+
+  describe "nonTask" $ do
+    it "consumes a line" $ do
+      let either = parse nonTask "N/A" "foo"
+      either `shouldSatisfy` isRight
+      let line = getRight either
+      getLineText line `shouldBe` "foo"
+      getLinePosition line `shouldBe` newPos "N/A" 1 1
+    it "doesn't conusume the next line" $ do
+      let either = parse nonTask "" "foo\nbar"
+      either `shouldSatisfy` isRight
+      let line = getRight either
+      getLineText line `shouldBe` "foo"
+      getLinePosition line `shouldBe` newPos "" 1 1
 
 -- TODO: add position to lines, so we can find tasks and return their positions
