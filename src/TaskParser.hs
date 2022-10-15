@@ -18,24 +18,33 @@ data Line
   | NonTask SourcePos String
   deriving (Eq, Show)
 
+data LineStatus
+  = Incomplete
+  | Complete
+  | Future
+  | NotATask
+
 unwrap (NumberToken a) = a
+
+--parseFile :: String -> Either ParseError [[Line]]
+--parseFile input = parse markdownFile "(unknown)" input
 
 --markdownFile :: GenParser Char st [Line]
 --markdownFile = do
 --  result <- many line
 --  eof
 --  return result
---
---
---line :: GenParser Char str String
---line = do
---  result <- do
---    taskWithDate
---    <|> taskWithoutDate
---    <|> completedTask
---    <|> nonTask
---  eol
---  return result
+
+
+line :: GenParser Char str Line
+line = do
+  result <- do
+    taskWithDate
+    <|> taskWithoutDate
+    <|> completedTask
+    <|> nonTask
+  eol
+  return result
 
 
 nonTask :: GenParser Char st Line
@@ -93,8 +102,6 @@ completedTask = do
   space
   CompletedTask pos <$> restOfLine
 
---parseFile :: String -> Either ParseError [[Line]]
---parseFile input = parse markdownFile "(unknown)" input
 
 getLineText :: Line -> String
 getLineText (Task _ s) = s
@@ -113,3 +120,9 @@ getLineDate (Task _ _) = Nothing
 getLineDate (CompletedTask _ _) = Nothing
 getLineDate (DatedTask _ d _) = Just d
 getLineDate (NonTask _ _) = Nothing
+
+getTaskStatus :: Line -> LineStatus
+getTaskStatus (Task _ _) = Incomplete
+getTaskStatus (DatedTask _ d _) = Incomplete
+getTaskStatus (CompletedTask _ _) = Complete
+getTaskStatus (NonTask _ _) = NotATask

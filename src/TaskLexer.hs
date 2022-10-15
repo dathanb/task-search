@@ -67,3 +67,6 @@ anything = many anyChar
 
 restOfLine :: GenParser Char st String
 restOfLine = many $ satisfy (/= '\n')
+
+eol :: GenParser Char st Char
+eol = satisfy (== '\n')

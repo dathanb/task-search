@@ -101,4 +101,28 @@ spec = do
       getLineText line `shouldBe` "foo"
       getLinePosition line `shouldBe` newPos "" 1 1
 
+  describe "line" $ do
+    it "consumes a task with a date" $ do
+      let either = parse nonTask "" "- [ ] >2019-05-01: foo"
+      either `shouldSatisfy` isRight
+      let line = getRight either
+      getLineText line `shouldBe` "foo"
+      getLinePosition line `shouldBe` newPos "" 1 1
+      getLineDate line `shouldBe` Just (Date 2019 1 1)
+    it "consumes a task without a date" $ do
+      let either = parse nonTask "" "- [ ] foo"
+      either `shouldSatisfy` isRight
+      let line = getRight either
+      getLineText line `shouldBe` "foo"
+      getLinePosition line `shouldBe` newPos "" 1 1
+      getLineDate line `shouldBe` Nothing
+    it "consumes a completed task" $ do
+      let either = parse nonTask "" "- [ ] foo"
+      either `shouldSatisfy` isRight
+      let line = getRight either
+      getLineText line `shouldBe` "foo"
+      getLinePosition line `shouldBe` newPos "" 1 1
+      getLineDate line `shouldBe` Nothing
+
+
 -- TODO: add position to lines, so we can find tasks and return their positions
